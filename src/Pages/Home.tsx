@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import '../App.css';
-import Navbar from '../Components/Navbar';
 import Bigpicture from '../Components/BigPicture';
 import HospitalCard from '../Components/HospitalCard';
 import ChatBot from '../Components/Chatbot';
