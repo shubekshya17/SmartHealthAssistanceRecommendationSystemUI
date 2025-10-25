@@ -84,6 +84,7 @@ const FindHospitals = () => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<Location | null>(null);
   const [hospitals, setHospitals] = useState<MockHospitalsType | []>([]);
+  console.log("Location",location);
 
   useEffect(() => {
     AOS.init({ duration: 2000 });
