@@ -2,6 +2,7 @@ import React from "react";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import Navbar from "../Components/Navbar";
+import ChatBot from '../Components/Chatbot';
 
 const { Content } = Layout;
 
@@ -25,6 +26,8 @@ const WebsiteLayout: React.FC = () => {
       <Content>
           <Outlet />
       </Content>
+      <ChatBot />
+
     </Layout>
   );
 };
