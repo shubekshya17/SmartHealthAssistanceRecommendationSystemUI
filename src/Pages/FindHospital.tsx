@@ -39,6 +39,8 @@ type MockHospitalsType = {
   phone: string;
   isOpen: boolean;
   specialties: string[];
+  latitude: number;
+  longitude: number;
 }[];
 
 const mockHospitals = [
@@ -52,6 +54,8 @@ const mockHospitals = [
     phone: "+977-1-4567890",
     isOpen: true,
     specialties: ["Emergency", "Cardiology", "Surgery"],
+    latitude: 27.7172,
+    longitude: 85.324, // Kathmandu city center
   },
   {
     id: 2,
@@ -63,6 +67,8 @@ const mockHospitals = [
     phone: "+977-1-4567891",
     isOpen: true,
     specialties: ["General Medicine", "Pediatrics"],
+    latitude: 27.7034,
+    longitude: 85.3366, // Near Lalitpur
   },
   {
     id: 3,
@@ -74,6 +80,8 @@ const mockHospitals = [
     phone: "+977-1-4567892",
     isOpen: false,
     specialties: ["Basic Healthcare", "Vaccination"],
+    latitude: 27.7305,
+    longitude: 85.3458, // North Kathmandu
   },
 ];
 
@@ -84,7 +92,7 @@ const FindHospitals = () => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<Location | null>(null);
   const [hospitals, setHospitals] = useState<MockHospitalsType | []>([]);
-  console.log("Location",location);
+  console.log("Location", location);
 
   useEffect(() => {
     AOS.init({ duration: 2000 });
@@ -467,6 +475,25 @@ const FindHospitals = () => {
                             fontWeight: 500,
                             minWidth: "120px",
                           }}
+                          onClick={() => {
+                            if (hospital.latitude && hospital.longitude) {
+                              window.open(
+                                `https://www.google.com/maps?q=${hospital.latitude},${hospital.longitude}`,
+                                "_blank"
+                              );
+                            } else if (hospital.address) {
+                              window.open(
+                                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                  hospital.address
+                                )}`,
+                                "_blank"
+                              );
+                            } else {
+                              message.warning(
+                                "No location information available"
+                              );
+                            }
+                          }}
                         >
                           Get Directions
                         </Button>
@@ -477,6 +504,18 @@ const FindHospitals = () => {
                             borderRadius: "6px",
                             fontWeight: 500,
                             minWidth: "120px",
+                          }}
+                          onClick={() => {
+                            navigator.clipboard
+                              .writeText(hospital.phone)
+                              .then(() =>
+                                message.success(
+                                  "Phone number copied to clipboard!"
+                                )
+                              )
+                              .catch(() =>
+                                message.error("Failed to copy number")
+                              );
                           }}
                         >
                           Call

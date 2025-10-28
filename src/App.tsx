@@ -7,6 +7,7 @@ import HospitalDetails from "./Pages/Hospital/HopsitalDetails";
 import EmergencyNumbersPage from "./Pages/EmergencyNumPage";
 import Event from "./Pages/Event";
 import HomePage from "./Pages/TrialHomePage";
+import PublicHospitalDetails from "./Pages/PublicHospitalDetails";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/HospitalDetails/:id" element={<HospitalDetails />} />
         <Route path="/EmergencyNumber" element={<EmergencyNumbersPage />} />
         <Route path="/Event" element={<Event />} />
+        <Route path="/PublicHospitalDetails" element={<PublicHospitalDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>
