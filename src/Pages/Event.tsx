@@ -157,9 +157,10 @@ export default function Event() {
               <a href="/" className="text-gray-700 hover:text-blue-600">Home</a>
               <a href="#eventsList" className="text-blue-600 font-semibold">Events</a>
             </div>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition" onClick={() => navigate("/HospitalsNearMe")}>
-              Find Hospitals
-            </button>
+            <MapPin
+              onClick={() => navigate("/HospitalsNearMe")}
+              className="w-6 h-6 text-blue-400 hover:text-blue-600 cursor-pointer transition-transform duration-200 hover:scale-110"
+            />
           </div>
         </div>
       </nav>

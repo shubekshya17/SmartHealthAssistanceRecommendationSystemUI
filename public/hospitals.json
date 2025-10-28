@@ -1,8 +1,0 @@
-[
-  { "id": 1, "name": "Patan Hospital", "address": "Lagankhel, Lalitpur", "image": "./logo.png"},
-  { "id": 2, "name": "Teaching Hospital", "address": "Maharajgunj, Kathmandu", "image": "./logo.png" },
-  { "id": 3, "name": "Patan Hospital", "address": "Lagankhel, Lalitpur", "image": "./logo.png"},
-  { "id": 4, "name": "Teaching Hospital", "address": "Maharajgunj, Kathmandu", "image": "./logo.png" },
-  { "id": 5, "name": "Patan Hospital", "address": "Lagankhel, Lalitpur", "image": "./logo.png" },
-  { "id": 6, "name": "Teaching Hospital", "address": "Maharajgunj, Kathmandu", "image": "./logo.png" }
-]

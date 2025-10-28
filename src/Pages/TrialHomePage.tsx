@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
-import { Heart, ChevronDown, ChevronUp, Bell, MapPin } from "lucide-react";
+import {
+  Heart,
+  ChevronDown,
+  ChevronUp,
+  Bell,
+  MapPin,
+  User,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import type { HospitalDropdownDto } from "../ViewModels/HospitalDropdownDto";
+import axios from "axios";
+import { message, Select } from "antd";
+import "../index.css";
 
-export default function TrialHomePage() {
+export default function HomePage() {
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   useEffect(() => {
@@ -68,6 +80,29 @@ export default function TrialHomePage() {
     document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const [hospitalDropdownList, setHospitalDropdownList] = useState<
+    HospitalDropdownDto[]
+  >([]);
+
+  const getHospitalDropdown = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/Hospitals/GetAll`);
+      if (response.status === 200 && response?.data) {
+        setHospitalDropdownList(response.data);
+      } else {
+        message.error(
+          response.data?.message || "Failed to fetch Hospital Dropdown List."
+        );
+      }
+    } catch (error) {
+      message.error("An error occurred while fetching list.");
+    }
+  };
+
+  useEffect(() => {
+    getHospitalDropdown();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <style>{`
@@ -113,12 +148,35 @@ export default function TrialHomePage() {
               >
                 Emergency
               </Link>
+              <Select
+                showSearch
+                placeholder="Search hospitals..."
+                optionFilterProp="label"
+                options={hospitalDropdownList.map((h) => ({
+                  label: h.hospitalName,
+                  value: h.hospitalId,
+                }))}
+                onChange={(value) => console.log("Selected hospital:", value)}
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                suffixIcon={null}
+                className="custom-select"
+              />
             </div>
 
-            <MapPin
-              onClick={() => navigate("/HospitalsNearMe")}
-              className="w-6 h-6 text-blue-400 hover:text-blue-600 cursor-pointer transition-transform duration-200 hover:scale-110"
-            />
+            <div className="flex items-center space-x-4">
+              <MapPin
+                onClick={() => navigate("/HospitalsNearMe")}
+                className="w-6 h-6 text-blue-400 hover:text-blue-600 cursor-pointer transition-transform duration-200 hover:scale-110"
+              />
+              <User
+                onClick={() => navigate("/LoginSignup")}
+                className="w-6 h-6 text-blue-400 hover:text-blue-600 cursor-pointer transition-transform duration-200 hover:scale-110"
+              />
+            </div>
           </div>
         </div>
       </nav>
