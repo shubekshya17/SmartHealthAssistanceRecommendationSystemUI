@@ -8,3 +8,48 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
+.custom-select {
+  width: 200px;
+}
+
+.custom-select .ant-select-selector {
+  height: 32px !important;
+  border-radius: 18px !important;
+  border: 1px solid #5c83d1 !important;
+  padding: 0 16px !important;
+  display: flex;
+  align-items: center;
+  background-color: #f9fafb !important;
+}
+
+.custom-select .ant-select-selection-placeholder {
+  color: #5c83d1 !important;
+  line-height: 34px !important;
+  font-size: 14px !important;
+}
+
+.custom-select .ant-select-selection-item {
+  color: #374151 !important;
+  line-height: 34px !important;
+  font-size: 14px !important;
+}
+
+.custom-select:hover .ant-select-selector {
+  background-color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.custom-select.ant-select-focused .ant-select-selector {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+  background-color: #ffffff !important;
+}
+
+.custom-select .ant-select-arrow {
+  color: #6b7280 !important;
+}
+
+/* Dropdown styling */
+.custom-select .ant-select-dropdown {
+  border-radius: 12px !important;
+}

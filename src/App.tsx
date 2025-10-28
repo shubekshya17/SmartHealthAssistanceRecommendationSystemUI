@@ -8,6 +8,7 @@ import EmergencyNumbersPage from "./Pages/EmergencyNumPage";
 import Event from "./Pages/Event";
 import HomePage from "./Pages/TrialHomePage";
 import PublicHospitalDetails from "./Pages/PublicHospitalDetails";
+import AuthComponent from "./Pages/Auth";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/EmergencyNumber" element={<EmergencyNumbersPage />} />
         <Route path="/Event" element={<Event />} />
         <Route path="/PublicHospitalDetails" element={<PublicHospitalDetails />} />
+        <Route path="/LoginSignUp" element={<AuthComponent />} />
         </Route>
       </Routes>
     </BrowserRouter>
