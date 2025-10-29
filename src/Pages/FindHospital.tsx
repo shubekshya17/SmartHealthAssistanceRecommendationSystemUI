@@ -478,17 +478,13 @@ const FindHospitals = () => {
                           onClick={() => {
                             if (hospital.latitude && hospital.longitude) {
                               window.open(
-                                `https://www.google.com/maps?q=${hospital.latitude},${hospital.longitude}`,
-                                "_blank"
-                              );
-                            } else if (hospital.address) {
-                              window.open(
                                 `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                                   hospital.address
                                 )}`,
                                 "_blank"
                               );
-                            } else {
+                            }
+                            else {
                               message.warning(
                                 "No location information available"
                               );

@@ -9,26 +9,32 @@ import Event from "./Pages/Event";
 import HomePage from "./Pages/TrialHomePage";
 import PublicHospitalDetails from "./Pages/PublicHospitalDetails";
 import AuthComponent from "./Pages/Auth";
+import DashboardLayout from "./Pages/AdminPages/Dashboard";
+import DashboardPage from "./Pages/AdminPages/DashboardPage";
+import DashboardPage1 from "./Pages/AdminPages/DashboardPage1";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<WebsiteLayout />}>
-        <Route path="/" element={<HomePage />}/>
-        <Route path="/HospitalsNearMe" element={<FindHospitals />} />
-        <Route path="/HospitalList" element={<HospitalList />} />
-        <Route path="/CreateHospital" element={<CreateHospital />} />
-        <Route path="/HospitalDetails/:id" element={<HospitalDetails />} />
-        <Route path="/EmergencyNumber" element={<EmergencyNumbersPage />} />
-        <Route path="/Event" element={<Event />} />
-        <Route path="/PublicHospitalDetails" element={<PublicHospitalDetails />} />
-        <Route path="/LoginSignUp" element={<AuthComponent />} />
+          <Route index element={<HomePage />} />
+          <Route path="HospitalsNearMe" element={<FindHospitals />} />
+          <Route path="HospitalList" element={<HospitalList />} />
+          <Route path="CreateHospital" element={<CreateHospital />} />
+          <Route path="HospitalDetails/:id" element={<HospitalDetails />} />
+          <Route path="EmergencyNumber" element={<EmergencyNumbersPage />} />
+          <Route path="Event" element={<Event />} />
+          <Route path="PublicHospitalDetails" element={<PublicHospitalDetails />} />
+          <Route path="LoginSignUp" element={<AuthComponent />} />
+        </Route>
+
+        <Route path="/Dashboard" element={<DashboardLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="DashboardPage1" element={<DashboardPage1 />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
 };
 export default App;
-
-
