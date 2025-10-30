@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
-import Navbar from "../Components/Navbar";
+//import Navbar from "../Components/Navbar";
 import ChatBot from '../Components/Chatbot';
 
 const { Content } = Layout;
@@ -22,7 +22,6 @@ const WebsiteLayout: React.FC = () => {
           style={{ flex: 1, minWidth: 0, padding: "0px 2px" }}
         />
       </Header> */}
-      <Navbar/>
       <Content>
           <Outlet />
       </Content>
