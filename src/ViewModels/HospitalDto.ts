@@ -15,6 +15,24 @@ export interface ListHospitalDto {
     closingTime: string;
     specialities: string[];
 }
+export interface NearbyHospitalDto {
+    hospitalId: number;
+    hospitalName: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+    phone: string;
+    email: string;
+    description: string;
+    imagePath: string;
+    type: HospitalType;
+    openingTime: string;
+    closingTime: string;
+    specialities: string[];
+    length: number;
+    distance: number;
+    isOpen: boolean
+}
 export interface CreateHospitalDto
 {
     hospitalId: number;
