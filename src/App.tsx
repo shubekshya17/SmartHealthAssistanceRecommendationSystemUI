@@ -6,12 +6,7 @@ import CreateHospital from "./Pages/Hospital/CreateHospital";
 import HospitalDetails from "./Pages/Hospital/HopsitalDetails";
 import EmergencyNumbersPage from "./Pages/EmergencyNumPage";
 import Event from "./Pages/Event";
-import HomePage from "./Pages/TrialHomePage";
-import PublicHospitalDetails from "./Pages/PublicHospitalDetails";
-import AuthComponent from "./Pages/Auth";
-import DashboardLayout from "./Pages/AdminPages/Dashboard";
-import DashboardPage from "./Pages/AdminPages/DashboardPage";
-import DashboardPage1 from "./Pages/AdminPages/DashboardPage1";
+import TrialHomePage from "./Pages/TrialHomePage";
 
 const App = () => {
   return (
@@ -37,4 +32,7 @@ const App = () => {
     </BrowserRouter>
   );
 };
+
 export default App;
+
+
