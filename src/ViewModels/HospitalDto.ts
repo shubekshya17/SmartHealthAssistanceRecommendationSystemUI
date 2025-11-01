@@ -14,6 +14,7 @@ export interface ListHospitalDto {
     openingTime: string;
     closingTime: string;
     specialities: string[];
+    departmentName: string[];
 }
 export interface NearbyHospitalDto {
     hospitalId: number;

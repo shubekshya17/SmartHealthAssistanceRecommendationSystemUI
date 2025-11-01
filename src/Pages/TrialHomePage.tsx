@@ -156,12 +156,16 @@ export default function HomePage() {
                   label: h.hospitalName,
                   value: h.hospitalId,
                 }))}
-                onChange={(value) => console.log("Selected hospital:", value)}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
+                onSelect={(value) =>
+                  navigate(`/PublicHospitalDetails/${value}`)
                 }
+                filterOption={(input, option) => {
+                  const label = (option?.label ?? "")
+                    .toLowerCase()
+                    .replace(/\s+/g, "");
+                  const searchValue = input.toLowerCase().replace(/\s+/g, "");
+                  return label.includes(searchValue);
+                }}
                 suffixIcon={null}
                 className="custom-select"
               />

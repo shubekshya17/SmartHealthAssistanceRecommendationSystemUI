@@ -24,11 +24,13 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
 import type { NearbyHospitalDto } from "../ViewModels/HospitalDto";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 const { Title, Paragraph, Text } = Typography;
 
 const FindHospitals = () => {
+  const navigate = useNavigate();
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   // const [location, setLocation] = useState<Location | null>(null);
@@ -318,6 +320,7 @@ const FindHospitals = () => {
             >
               {hospitals.map((hospital) => (
                 <Card
+                  onClick={() => navigate(`/PublicHospitalDetails/${hospital.hospitalId}`)}
                   data-aos="fade-up"
                   key={hospital.hospitalId}
                   hoverable
