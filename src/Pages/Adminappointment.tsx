@@ -35,24 +35,39 @@ const AdminCreateSlot: React.FC = () => {
   const [doctors, setDoctors] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchHospitals = async () => {
       try {
-        const hospitalsRes = await fetch(`http://localhost:5102/api/Hospitals/GetAll`);
-        const hospitalsData = await hospitalsRes.json();
-        setHospitals(hospitalsData);
-
-        const doctorsRes = await fetch(`http://localhost:5102/api/Doctor/GetAll`);
-        const doctorsData = await doctorsRes.json();
-        setDoctors(doctorsData);
+        const res = await fetch(
+          `http://localhost:5102/api/Hospitals/GetHospitalDropdown`
+        );
+        const data = await res.json();
+        setHospitals(data);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching hospitals:", err);
       }
     };
-
-    fetchData();
+    fetchHospitals();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      if (!form.hospitalId) return;
+      try {
+        const res = await fetch(
+          `http://localhost:5102/api/Doctor/GetDoctorByHospitalId/${form.hospitalId}`
+        );
+        const data = await res.json();
+        setDoctors(data);
+      } catch (err) {
+        console.error("Error fetching doctors:", err);
+      }
+    };
+    fetchDoctors();
+  }, [form.hospitalId]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -83,8 +98,10 @@ const AdminCreateSlot: React.FC = () => {
     };
 
     // Convert doctorId and hospitalId only if not empty
-    if (form.doctorId !== "") payload.doctorId = parseInt(String(form.doctorId), 10);
-    if (form.hospitalId !== "") payload.hospitalId = parseInt(String(form.hospitalId), 10);
+    if (form.doctorId !== "")
+      payload.doctorId = parseInt(String(form.doctorId), 10);
+    if (form.hospitalId !== "")
+      payload.hospitalId = parseInt(String(form.hospitalId), 10);
 
     // Fix time format and remove null/empty
     Object.keys(payload).forEach((key) => {
@@ -93,19 +110,21 @@ const AdminCreateSlot: React.FC = () => {
         delete payload[key]; // remove null/empty
       } else if (
         typeof val === "string" &&
-        (key.toLowerCase().includes("start") || key.toLowerCase().includes("end"))
+        (key.toLowerCase().includes("start") ||
+          key.toLowerCase().includes("end"))
       ) {
         if (/^\d{2}:\d{2}$/.test(val)) payload[key] = val + ":00";
       }
     });
-
     console.log("🟡 Sending payload:", payload);
 
     try {
-      const res = await axios.post("http://localhost:5102/api/Appointment/CreateSlot", payload);
+      const res = await axios.post(
+        "http://localhost:5102/api/Appointment/CreateSlot",
+        payload
+      );
       console.log("🟢 API Response:", res.data);
       alert("Slot created successfully!");
-
       setForm({
         doctorId: "",
         hospitalId: "",
@@ -202,7 +221,10 @@ const AdminCreateSlot: React.FC = () => {
               name={`${day.toLowerCase()}Start`}
               value={(form as any)[`${day.toLowerCase()}Start`] || ""}
               onChange={(e) =>
-                setForm((prev) => ({ ...prev, [`${day.toLowerCase()}Start`]: e.target.value }))
+                setForm((prev) => ({
+                  ...prev,
+                  [`${day.toLowerCase()}Start`]: e.target.value,
+                }))
               }
               className="border p-1"
               required
@@ -213,7 +235,10 @@ const AdminCreateSlot: React.FC = () => {
               name={`${day.toLowerCase()}End`}
               value={(form as any)[`${day.toLowerCase()}End`] || ""}
               onChange={(e) =>
-                setForm((prev) => ({ ...prev, [`${day.toLowerCase()}End`]: e.target.value }))
+                setForm((prev) => ({
+                  ...prev,
+                  [`${day.toLowerCase()}End`]: e.target.value,
+                }))
               }
               className="border p-1"
               required
@@ -233,7 +258,10 @@ const AdminCreateSlot: React.FC = () => {
           />
         </div>
 
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
           Create Slot
         </button>
       </form>
