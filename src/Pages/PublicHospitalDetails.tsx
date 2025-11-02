@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type { ListHospitalDto } from "../ViewModels/HospitalDto";
 import { message } from "antd";
 import type { ListEventDto } from "../ViewModels/Event";
@@ -21,7 +21,6 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 const PublicHospitalDetails = () => {
   const params = useParams();
-  const navigate = useNavigate();
 
   const [hospitalDetails, setHospitalDetails] = useState<ListHospitalDto>();
   const [hospitalEvents, setHospitalEvents] = useState<ListEventDto[]>([]);
@@ -160,10 +159,7 @@ const PublicHospitalDetails = () => {
                     {hospitalDetails.openingTime}
                   </span>
                 </div>
-                <button
-                  className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-6 py-2 rounded-lg font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-sm flex items-center gap-2"
-                  onClick={() => navigate(`/Booking/${params.id}`)}
-                >
+                <button className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-6 py-2 rounded-lg font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-sm flex items-center gap-2">
                   <span className="text-lg">📅</span>
                   Book Appointment
                 </button>
@@ -250,11 +246,8 @@ const PublicHospitalDetails = () => {
                 <button className="w-full mt-4 bg-white text-teal-700 font-bold py-3 rounded-lg hover:bg-teal-50 transition-all duration-200 shadow-lg hover:shadow-xl text-sm">
                   Get Directions →
                 </button>
-                <button
-                  className="w-full mt-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 font-bold py-3 rounded-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 shadow-lg text-sm flex items-center justify-center gap-2"
-                  onClick={() => navigate(`/Booking/${params.id}`)}
-                >
-                  {/* <span className="text-lg">📅</span> */}
+                <button className="w-full mt-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 font-bold py-3 rounded-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 shadow-lg text-sm flex items-center justify-center gap-2">
+                  <span className="text-lg">📅</span>
                   Book Appointment Now
                 </button>
               </div>
