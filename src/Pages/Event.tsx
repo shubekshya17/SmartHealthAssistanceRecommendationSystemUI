@@ -1,14 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Heart, Calendar, MapPin, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import type { EventDtoForEventPage } from '../ViewModels/Event';
-import { message } from 'antd';
-import dayjs from 'dayjs';
 
-function EventCard({eventName, eventLocation, description, eventDate, startingTime, closingTime, imageUrl, hospitalName}:any) {
+function EventCard({ date, title, description, hospital, hospitalImage, time, location}:any) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const formattedDate = dayjs(eventDate).format("YYYY-MM-DD");
 
   return (
     <div 
@@ -23,25 +18,25 @@ function EventCard({eventName, eventLocation, description, eventDate, startingTi
             <div className="flex items-center justify-between mb-4">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700">
                 <Calendar className="w-4 h-4 mr-1" />
-                {formattedDate}
+                {date}
               </span>
               <span className="text-sm text-gray-500 flex items-center">
                 <Clock className="w-4 h-4 mr-1" />
-                {startingTime} - {closingTime}
+                {time}
               </span>
             </div>
             
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">{eventName}</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
             <p className="text-gray-600 mb-4">{description}</p>
             
             <div className="space-y-2 border-t pt-4">
               <div className="flex items-center text-gray-700">
                 <MapPin className="w-4 h-4 mr-2 text-blue-600" />
-                <span className="text-sm font-medium">0rganized By: {hospitalName}</span>
+                <span className="text-sm font-medium">{hospital}</span>
               </div>
               <div className="flex items-center text-gray-700">
                 <MapPin className="w-4 h-4 mr-2 text-purple-600" />
-                <span className="text-sm">Location: {eventLocation}</span>
+                <span className="text-sm">{location}</span>
               </div>
             </div>
           </div>
@@ -50,16 +45,16 @@ function EventCard({eventName, eventLocation, description, eventDate, startingTi
         {/* Back */}
         <div className="absolute w-full h-full backface-hidden bg-white rounded-xl shadow-lg overflow-hidden rotate-y-180">
           <img 
-            src={imageUrl} 
-            alt={eventName}
+            src={hospitalImage} 
+            alt={hospital}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
-            <h4 className="text-white text-2xl font-bold mb-2">{hospitalName}</h4>
-            <p className="text-white/90 text-lg mb-3">{eventName}</p>
+            <h4 className="text-white text-2xl font-bold mb-2">{hospital}</h4>
+            <p className="text-white/90 text-lg mb-3">{title}</p>
             <div className="flex items-center text-white/80 text-sm mb-4">
               <Calendar className="w-4 h-4 mr-2" />
-              <span>{formattedDate} • {startingTime}</span>
+              <span>{date} • {time}</span>
             </div>
           </div>
         </div>
@@ -82,29 +77,71 @@ function EventCard({eventName, eventLocation, description, eventDate, startingTi
     </div>
   );
 }
-const BASE_URL = import.meta.env.VITE_API_URL;
+
 export default function Event() {
   const navigate = useNavigate();
-  const [hospitalEvent, setHospitalEvent] = useState<EventDtoForEventPage[]>([]);
-  const getHospitalEvents = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/Event/GetAll`);
-        console.log(response.data);
-        if (response.status === 200) {
-          setHospitalEvent(response.data);
-        } else {
-          message.error(
-            response.data?.message || "Failed to fetch Hospital List."
-          );
-        }
-      } catch (error) {
-        message.error("An error occurred while fetching list.");
-      }
-    };
-  
-    useEffect(() => {
-      getHospitalEvents();
-    }, []);
+  const events = [
+    {
+      date: "Nov 5, 2025",
+      time: "9:00 AM - 3:00 PM",
+      title: "Blood Donation Drive",
+      description: "Join our lifesaving blood donation campaign. Your donation can save up to 3 lives. Free health checkup included for all donors.",
+      hospital: "City General Hospital",
+      location: "Kathmandu, Nepal",
+      hospitalImage: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=300&fit=crop",
+      category: "Health Campaign"
+    },
+    {
+      date: "Nov 12, 2025",
+      time: "10:00 AM - 4:00 PM",
+      title: "Free Eye Care Campaign",
+      description: "Complimentary eye checkups and vision screening for all age groups. Free reading glasses for those in need.",
+      hospital: "Vision Care Center",
+      location: "Pokhara, Nepal",
+      hospitalImage: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=400&h=300&fit=crop",
+      category: "Medical Camp"
+    },
+    {
+      date: "Nov 18, 2025",
+      time: "2:00 PM - 5:00 PM",
+      title: "Health Awareness Workshop",
+      description: "Learn about preventive healthcare, nutrition, and wellness strategies from expert doctors and nutritionists.",
+      hospital: "Community Health Center",
+      location: "Lalitpur, Nepal",
+      hospitalImage: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=400&h=300&fit=crop",
+      category: "Workshop"
+    },
+    {
+      date: "Nov 25, 2025",
+      time: "8:00 AM - 12:00 PM",
+      title: "Diabetes Screening Camp",
+      description: "Free diabetes screening and consultation. Learn about managing blood sugar levels and healthy lifestyle choices.",
+      hospital: "Metropol Hospital",
+      location: "Bhaktapur, Nepal",
+      hospitalImage: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=400&h=300&fit=crop",
+      category: "Medical Camp"
+    },
+    {
+      date: "Dec 2, 2025",
+      time: "1:00 PM - 4:00 PM",
+      title: "Mental Health Awareness Seminar",
+      description: "Breaking the stigma around mental health. Interactive session with psychiatrists and counselors.",
+      hospital: "Mindcare Wellness Center",
+      location: "Kathmandu, Nepal",
+      hospitalImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop",
+      category: "Workshop"
+    },
+    {
+      date: "Dec 10, 2025",
+      time: "9:00 AM - 2:00 PM",
+      title: "Vaccination Drive for Children",
+      description: "Free vaccination camp for children under 5 years. Covering all essential vaccines recommended by WHO.",
+      hospital: "Children's Healthcare Center",
+      location: "Chitwan, Nepal",
+      hospitalImage: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=400&h=300&fit=crop",
+      category: "Health Campaign"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -153,12 +190,12 @@ export default function Event() {
       {/* Events Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-mt-24" id="eventsList">
-          {hospitalEvent.map((event, index) => (
+          {events.map((event, index) => (
             <EventCard key={index} {...event} />
           ))}
         </div>
 
-        {hospitalEvent.length === 0 && (
+        {events.length === 0 && (
           <div className="text-center py-12">
             <p className="text-xl text-gray-500">No events found in this category.</p>
           </div>
