@@ -106,6 +106,26 @@ export default function Booking() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
+   // Fetch doctors when hospital changes
+  useEffect(() => {
+    if (!selectedHospital) return;
+    fetch(`http://localhost:5102/api/Doctor/GetAll`)
+      .then((res) => res.json())
+      .then((data) => {
+        setDoctors(data);
+        setFilteredDoctors(data);
+      })
+      .catch(console.error);
+  }, [selectedHospital]);
+  // Filter doctors by specialty
+  useEffect(() => {
+    if (selectedSpecialty === "all") setFilteredDoctors(doctors);
+    else
+      setFilteredDoctors(
+        doctors.filter((d) => d.departmentId === Number(selectedSpecialty))
+      );
+    setSelectedDoctor(null);
+  }, [selectedSpecialty, doctors]);
   
   const [step, setStep] = useState(1);
   // Slots
@@ -119,31 +139,7 @@ export default function Booking() {
   const [patientPhone, setPatientPhone] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
   const [symptoms, setSymptoms] = useState("");
-
  
-
-  // Fetch doctors when hospital changes
-  useEffect(() => {
-    if (!selectedHospital) return;
-    fetch(`http://localhost:5102/api/Doctor/GetAll`)
-      .then((res) => res.json())
-      .then((data) => {
-        setDoctors(data);
-        setFilteredDoctors(data);
-      })
-      .catch(console.error);
-  }, [selectedHospital]);
-
-  // Filter doctors by specialty
-  useEffect(() => {
-    if (selectedSpecialty === "all") setFilteredDoctors(doctors);
-    else
-      setFilteredDoctors(
-        doctors.filter((d) => d.departmentId === Number(selectedSpecialty))
-      );
-    setSelectedDoctor(null);
-  }, [selectedSpecialty, doctors]);
-
   // Fetch slots for selected doctor
   useEffect(() => {
     if (!selectedDoctor || !selectedHospital) return;
