@@ -35,26 +35,35 @@ const AdminCreateSlot: React.FC = () => {
   const [doctors, setDoctors] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchHospitals = async () => {
       try {
-        const hospitalsRes = await fetch(
-          `http://localhost:5102/api/Hospitals/GetAll`
+        const res = await fetch(
+          `http://localhost:5102/api/Hospitals/GetHospitalDropdown`
         );
-        const hospitalsData = await hospitalsRes.json();
-        setHospitals(hospitalsData);
-
-        const doctorsRes = await fetch(
-          `http://localhost:5102/api/Doctor/GetAll`
-        );
-        const doctorsData = await doctorsRes.json();
-        setDoctors(doctorsData);
+        const data = await res.json();
+        setHospitals(data);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching hospitals:", err);
       }
     };
-
-    fetchData();
+    fetchHospitals();
   }, []);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      if (!form.hospitalId) return;
+      try {
+        const res = await fetch(
+          `http://localhost:5102/api/Doctor/GetDoctorByHospitalId/${form.hospitalId}`
+        );
+        const data = await res.json();
+        setDoctors(data);
+      } catch (err) {
+        console.error("Error fetching doctors:", err);
+      }
+    };
+    fetchDoctors();
+  }, [form.hospitalId]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -107,7 +116,6 @@ const AdminCreateSlot: React.FC = () => {
         if (/^\d{2}:\d{2}$/.test(val)) payload[key] = val + ":00";
       }
     });
-
     console.log("🟡 Sending payload:", payload);
 
     try {
@@ -117,7 +125,6 @@ const AdminCreateSlot: React.FC = () => {
       );
       console.log("🟢 API Response:", res.data);
       alert("Slot created successfully!");
-
       setForm({
         doctorId: "",
         hospitalId: "",

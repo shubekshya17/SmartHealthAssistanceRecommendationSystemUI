@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "wouter";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useParams,Link } from "react-router-dom";
 
 interface Hospital {
   hospitalId: number;
@@ -13,6 +13,7 @@ interface Doctor {
   fullName: string;
   specialization: string;
   hospitalId: number;
+  departmentId: number;
 }
 
 interface Slot {
@@ -46,34 +47,67 @@ interface BookedSlot {
   isConfirmed: boolean;
 }
 
+interface Department {
+  departmentId : number;
+  departmentName: string;
+}
+
 export default function Booking() {
   const params = useParams();
-  const { hospitalId: paramHospitalId } = params;
 
-  const [step, setStep] = useState(1);
-
-  // Hospitals
+  const [selectedHospital, setSelectedHospital] = useState<number | null>(null);
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
-  const [selectedHospital, setSelectedHospital] = useState<number | null>(
-    paramHospitalId ? parseInt(paramHospitalId) : null
-  );
+   // Fetch hospitals
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5102/api/Hospitals/GetHospitalDropdown"
+        );
+        const data = await res.json();
+        setHospitals(data);
+      } catch (err) {
+        console.error("Error fetching hospitals:", err);
+      }
+    };
+    fetchHospitals();
+  }, [params.id]);
+  useEffect(() => {
+    if (params.id) {
+      const match = hospitals.find(
+        (h: any) => h.hospitalId === parseInt(params.id!)
+      );
+      if (match) {
+        setSelectedHospital(match.hospitalId);
+      } 
+    }
+  }, [hospitals, params.id]);
+
+  //Departments OR Specialities
+  const [filteredSpecialities, setFilteredSpecialities] = useState<Department[]>([]);
+  useEffect(() => {
+    if(!selectedHospital) return;
+    const fetchSpecialities = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5102/api/Department/GetDepartmentByHospitalId/${selectedHospital}`
+        );
+        const data = await res.json();
+        setFilteredSpecialities(data);
+      } catch (err) {
+        console.error("Error fetching specialities:", err);
+      }
+    };
+    fetchSpecialities();
+  }, [selectedHospital]);
+  const [selectedSpecialty, setSelectedSpecialty] = useState("all");
 
   // Doctors
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
-
-  const [selectedSpecialty, setSelectedSpecialty] = useState("all");
-  const specialties = [
-    "All Specialties",
-    "cardiologist",
-    "Neurologist",
-    "Pediatrician",
-    "Orthopedic",
-    "Dermatologist",
-    "General Physician",
-  ];
-
+  
+  const [step, setStep] = useState(1);
   // Slots
   const [slots, setSlots] = useState<Slot[]>([]);
   const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
@@ -86,13 +120,7 @@ export default function Booking() {
   const [patientEmail, setPatientEmail] = useState("");
   const [symptoms, setSymptoms] = useState("");
 
-  // Fetch hospitals
-  useEffect(() => {
-    fetch("http://localhost:5102/api/Hospitals/GetAll")
-      .then((res) => res.json())
-      .then(setHospitals)
-      .catch(console.error);
-  }, []);
+ 
 
   // Fetch doctors when hospital changes
   useEffect(() => {
@@ -111,7 +139,7 @@ export default function Booking() {
     if (selectedSpecialty === "all") setFilteredDoctors(doctors);
     else
       setFilteredDoctors(
-        doctors.filter((d) => d.specialization === selectedSpecialty)
+        doctors.filter((d) => d.departmentId === Number(selectedSpecialty))
       );
     setSelectedDoctor(null);
   }, [selectedSpecialty, doctors]);
@@ -427,8 +455,8 @@ export default function Booking() {
                 Select Hospital
               </label>
               <select
-                value={selectedHospital || ""}
-                onChange={(e) => setSelectedHospital(parseInt(e.target.value))}
+                value={selectedHospital?.toString()}
+                disabled={!!selectedHospital}
                 style={{
                   width: "100%",
                   border: "1px solid #d1d5db",
@@ -436,6 +464,7 @@ export default function Booking() {
                   padding: "8px 12px",
                   fontSize: "14px",
                   backgroundColor: "white",
+                  cursor: selectedHospital ? "not-allowed" : "pointer",
                 }}
               >
                 <option value="">Select Hospital</option>
@@ -464,9 +493,10 @@ export default function Booking() {
                   backgroundColor: "white",
                 }}
               >
-                {specialties.map((s) => (
-                  <option key={s} value={s === "All Specialties" ? "all" : s}>
-                    {s}
+                <option value="">Select Department</option>
+                {filteredSpecialities.map((s) => (
+                  <option key={s.departmentId} value={s.departmentId}>
+                    {s.departmentName}
                   </option>
                 ))}
               </select>
