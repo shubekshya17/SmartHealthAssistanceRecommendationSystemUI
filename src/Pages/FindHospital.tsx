@@ -19,80 +19,22 @@ import {
   CompassOutlined,
   EnvironmentOutlined,
   PhoneOutlined,
-  StarFilled,
 } from "@ant-design/icons";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from "axios";
+import type { NearbyHospitalDto } from "../ViewModels/HospitalDto";
+import { useNavigate } from "react-router-dom";
 
-type Location = {
-  lat: number;
-  lng: number;
-};
-
-type MockHospitalsType = {
-  id: number;
-  name: string;
-  type: string;
-  address: string;
-  distance: string;
-  rating: number;
-  phone: string;
-  isOpen: boolean;
-  specialties: string[];
-  latitude: number;
-  longitude: number;
-}[];
-
-const mockHospitals = [
-  {
-    id: 1,
-    name: "City General Hospital",
-    type: "Hospital",
-    address: "123 Main Street, Downtown",
-    distance: "0.8 km",
-    rating: 4.5,
-    phone: "+977-1-4567890",
-    isOpen: true,
-    specialties: ["Emergency", "Cardiology", "Surgery"],
-    latitude: 27.7172,
-    longitude: 85.324, // Kathmandu city center
-  },
-  {
-    id: 2,
-    name: "Community Health Clinic",
-    type: "Clinic",
-    address: "456 Oak Avenue, Suburb",
-    distance: "1.2 km",
-    rating: 4.2,
-    phone: "+977-1-4567891",
-    isOpen: true,
-    specialties: ["General Medicine", "Pediatrics"],
-    latitude: 27.7034,
-    longitude: 85.3366, // Near Lalitpur
-  },
-  {
-    id: 3,
-    name: "Mountain View Health Post",
-    type: "Health Post",
-    address: "789 Hill Road, Valley",
-    distance: "2.1 km",
-    rating: 3.9,
-    phone: "+977-1-4567892",
-    isOpen: false,
-    specialties: ["Basic Healthcare", "Vaccination"],
-    latitude: 27.7305,
-    longitude: 85.3458, // North Kathmandu
-  },
-];
-
+const BASE_URL = import.meta.env.VITE_API_URL;
 const { Title, Paragraph, Text } = Typography;
 
 const FindHospitals = () => {
+  const navigate = useNavigate();
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState<Location | null>(null);
-  const [hospitals, setHospitals] = useState<MockHospitalsType | []>([]);
-  console.log("Location", location);
+  // const [location, setLocation] = useState<Location | null>(null);
+  const [hospitals, setHospitals] = useState<NearbyHospitalDto[] | []>([]);
 
   useEffect(() => {
     AOS.init({ duration: 2000 });
@@ -100,26 +42,36 @@ const FindHospitals = () => {
 
   const getTypeColor = (type: any) => {
     switch (type) {
-      case "Hospital":
+      case 1:
         return "red";
-      case "Clinic":
+      case 2:
         return "blue";
-      case "Health Post":
+      case 3:
         return "green";
       default:
         return "default";
     }
   };
 
-  const enableLocation = () => {
+  const enableLocation = async () => {
     setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ lat: latitude, lng: longitude });
+          // setLocation({ lat: latitude, lng: longitude });
           setLocationEnabled(true);
-          setHospitals(mockHospitals);
+
+          try {
+            const response = await axios.get(
+              `${BASE_URL}/Hospitals/GetNearbyHospitals?latitude=${latitude}&longitude=${longitude}`
+            );
+            setHospitals(response.data ?? []);
+          } catch (error) {
+            console.error("Error fetching nearest hospitals:", error);
+            message.error("Unable to fetch nearest hospitals");
+          }
+
           setLoading(false);
         },
         (error) => {
@@ -354,7 +306,7 @@ const FindHospitals = () => {
                 Healthcare Facilities Near You
               </Title>
               <Text type="secondary">
-                Found {hospitals.length} facilities within 5km radius
+                Found {hospitals.length} facilities within 20km radius
               </Text>
             </div>
 
@@ -368,8 +320,9 @@ const FindHospitals = () => {
             >
               {hospitals.map((hospital) => (
                 <Card
+                  onClick={() => navigate(`/PublicHospitalDetails/${hospital.hospitalId}`)}
                   data-aos="fade-up"
-                  key={hospital.id}
+                  key={hospital.hospitalId}
                   hoverable
                   style={{
                     borderRadius: "12px",
@@ -398,7 +351,7 @@ const FindHospitals = () => {
                             level={4}
                             style={{ margin: 0, color: "#262626" }}
                           >
-                            {hospital.name}
+                            {hospital.hospitalName}
                           </Title>
                           <Tag
                             color={getTypeColor(hospital.type)}
@@ -415,7 +368,11 @@ const FindHospitals = () => {
                               }`,
                             }}
                           >
-                            {hospital.type}
+                            {hospital.type === 1
+                              ? "Hospital"
+                              : hospital.type === 2
+                              ? "Clinic"
+                              : "Health Post"}
                           </Tag>
                         </div>
 
@@ -439,9 +396,9 @@ const FindHospitals = () => {
                             style={{ display: "flex", alignItems: "center" }}
                           >
                             <CompassOutlined style={{ marginRight: 4 }} />
-                            {hospital.distance}
+                            {hospital.distance}km
                           </Text>
-                          <Text
+                          {/* <Text
                             type="secondary"
                             style={{ display: "flex", alignItems: "center" }}
                           >
@@ -449,7 +406,7 @@ const FindHospitals = () => {
                               style={{ marginRight: 4, color: "#faad14" }}
                             />
                             {hospital.rating}
-                          </Text>
+                          </Text> */}
                           <Text
                             style={{
                               display: "flex",
@@ -483,8 +440,7 @@ const FindHospitals = () => {
                                 )}`,
                                 "_blank"
                               );
-                            }
-                            else {
+                            } else {
                               message.warning(
                                 "No location information available"
                               );
@@ -535,7 +491,7 @@ const FindHospitals = () => {
                       Specialties:
                     </Text>
                     <Space wrap size={[8, 8]}>
-                      {hospital.specialties?.map((specialty, index) => (
+                      {hospital.specialities?.map((specialty, index) => (
                         <Tag
                           key={index}
                           style={{
