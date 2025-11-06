@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Steps, message, Select, TimePicker } from "antd";
-import type { CreateHospitalDto } from "../../ViewModels/HospitalDto";
+import type { CreateHospitalDto } from "../../../ViewModels/HospitalDto";
 import axios from "axios";
 import dayjs from "dayjs";
+import type { DepartmentListDto } from "../../../ViewModels/Department";
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -11,11 +13,12 @@ const CreateHospital: React.FC = () => {
   const [current, setCurrent] = useState(0);
   const [form] = Form.useForm();
   const { Step } = Steps;
+  const navigate = useNavigate();
 
   const stepFields = [
     ["hospitalName", "address", "phone", "email", "type"],
     ["latitude", "longitude", "openingTime", "closingTime"],
-    ["description", "specialities"],
+    ["description", "specialities", "departments", "imagePath"],
   ];
 
   const next = async () => {
@@ -48,6 +51,7 @@ const CreateHospital: React.FC = () => {
       if (response.status === 200 && response.data?.success) {
         form.resetFields();
         message.success("Hospital data submitted successfully!");
+        navigate("/Dashboard/HospitalList");
       } else {
         message.error(response.data?.message);
       }
@@ -56,8 +60,31 @@ const CreateHospital: React.FC = () => {
     }
   };
 
+  const [departmentList, setDepartmentList] = useState<DepartmentListDto[]>([]);
+  useEffect(() => {
+    const fetchDepartment = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/Department/GetAll`);
+        if (response.status === 200) {
+          setDepartmentList(response.data);
+        } else {
+          message.error(
+            response.data?.message || "Failed to fetch Department List."
+          );
+        }
+      } catch (error) {
+        message.error("An error occurred while fetching list.");
+      }
+    };
+    fetchDepartment();
+  }, []);
+
   return (
-    <div className="p-8 mt-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto">
+      {/* Title */}
+      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-3">
+        Create Hospital
+      </h2>
       <Steps current={current} className="mb-6">
         <Step title="Basic Info" />
         <Step title="Location & Timing" />
@@ -194,7 +221,38 @@ const CreateHospital: React.FC = () => {
               <Select mode="tags" placeholder="Add specialities" />
             </Form.Item>
 
-            <Form.Item label="Image Path" name="imagePath">
+            <Form.Item
+              label="Departments"
+              name="departments"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select at least one department",
+                },
+              ]}
+            >
+              <Select
+                mode="tags"
+                placeholder="Add Departments"
+                options={
+                  departmentList.map((item: any) => ({
+                    value: item.departmentId,
+                    label: item.departmentName,
+                  })) ?? []
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Image Path"
+              name="imagePath"
+              rules={[
+                {
+                  required: true,
+                  message: "Please insert hospital image",
+                },
+              ]}
+            >
               <Input placeholder="/images/hospitals/patan-hospital.jpg" />
             </Form.Item>
           </>

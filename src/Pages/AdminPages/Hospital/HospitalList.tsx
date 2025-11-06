@@ -1,8 +1,8 @@
-import { Button, Card, message, Popconfirm, Space, Table, Tag } from "antd";
+import { Button, Card, message, Popconfirm, Space, Table } from "antd";
 import type { TableProps } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import type { ListHospitalDto } from "../../ViewModels/HospitalDto";
+import type { ListHospitalDto } from "../../../ViewModels/HospitalDto";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -52,7 +52,7 @@ const HospitalList = () => {
       key: "hospitalName",
       render: (_, record) => (
         <a
-          onClick={() => navigate(`/HospitalDetails/${record.hospitalId}`)}
+          onClick={() => navigate(`/Dashboard/HospitalDetails/${record.hospitalId}`)}
           style={{ color: "#1677ff", cursor: "pointer" }}
         >
           {record.hospitalName}
@@ -74,23 +74,23 @@ const HospitalList = () => {
       dataIndex: "email",
       key: "email",
     },
-    {
-      title: "Specialities",
-      key: "specialities",
-      dataIndex: "specialities",
-      render: (_, { specialities }) => (
-        <>
-          {specialities.map((specialities) => {
-            let color = specialities.length > 5 ? "green" : "geekblue";
-            return (
-              <Tag color={color} key={specialities}>
-                {specialities.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
+    // {
+    //   title: "Specialities",
+    //   key: "specialities",
+    //   dataIndex: "specialities",
+    //   render: (_, { specialities }) => (
+    //     <>
+    //       {specialities.map((specialities) => {
+    //         let color = specialities.length > 5 ? "green" : "geekblue";
+    //         return (
+    //           <Tag color={color} key={specialities}>
+    //             {specialities.toUpperCase()}
+    //           </Tag>
+    //         );
+    //       })}
+    //     </>
+    //   ),
+    // },
     {
       title: "Action",
       dataIndex: "operation",
@@ -130,14 +130,7 @@ const HospitalList = () => {
             size="small"
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => navigate("/CreateHospital")}
-            style={{
-              borderColor: "#91caff",
-              color: "#1677ff",
-              backgroundColor: "#e6f4ff",
-              borderRadius: "6px",
-              fontWeight: 500,
-            }}
+            onClick={() => navigate("/Dashboard/CreateHospital")}
           >
             Add Hospital
           </Button>

@@ -51,4 +51,5 @@ export interface CreateHospitalDto
     openingTime: string;
     closingTime: string;
     specialities: string[];
+    departments: number[];
 }

@@ -19,7 +19,7 @@ import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import type { ListHospitalDto } from "../../ViewModels/HospitalDto";
+import type { ListHospitalDto } from "../../../ViewModels/HospitalDto";
 
 const { Title, Paragraph } = Typography;
 const BASE_URL = import.meta.env.VITE_API_URL;
