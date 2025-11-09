@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 interface SlotForm {
   doctorId: string | number;
@@ -23,6 +24,7 @@ interface SlotForm {
 }
 
 const AdminCreateSlot: React.FC = () => {
+  const params = useParams();
   const [form, setForm] = useState<SlotForm>({
     doctorId: "",
     hospitalId: "",
@@ -33,6 +35,15 @@ const AdminCreateSlot: React.FC = () => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [hospitals, setHospitals] = useState<any[]>([]);
   const [doctors, setDoctors] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (params.id && hospitals.length > 0) {
+      setForm((prev) => ({
+        ...prev,
+        hospitalId: String(params.id),
+      }));
+    }
+  }, [params.id, hospitals]);
 
   useEffect(() => {
     const fetchHospitals = async () => {
@@ -154,6 +165,7 @@ const AdminCreateSlot: React.FC = () => {
             name="hospitalId"
             value={form.hospitalId}
             onChange={handleInputChange}
+            disabled={!!params.id}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
           >
             <option value="">Select Hospital</option>

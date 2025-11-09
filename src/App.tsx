@@ -18,6 +18,14 @@ import DashboardDoctor from "./Pages/dashboarddoctor";
 import DepartmentList from "./Pages/AdminPages/Department/DepartmentList";
 import EventList from "./Pages/AdminPages/Event/EventList";
 import DoctorList from "./Pages/AdminPages/Doctor/DoctorList";
+import HospitalDashboardLayout from "./Pages/HospitalAdminPages/HospitalDashboardLayout";
+import Department from "./Pages/HospitalAdminPages/HospitalDashboardDepartment/List";
+import Profile from "./Pages/HospitalAdminPages/HospitalDashboardProfile/List";
+import Doctor from "./Pages/HospitalAdminPages/HospitalDashboardDoctor/List";
+import HospitalDashboardEvent from "./Pages/HospitalAdminPages/HospitalDashboardEvent/List";
+import Appointment from "./Pages/HospitalAdminPages/HospitalDashboardAppointment/List";
+import Notification from "./Pages/HospitalAdminPages/HospitalDashboardNotification";
+import HospitalDashboardPage from "./Pages/HospitalAdminPages/HospitalDashboardPage";
 
 const App = () => {
   return (
@@ -44,6 +52,18 @@ const App = () => {
           <Route path="DepartmentList" element={<DepartmentList />} />
           <Route path="EventList" element={<EventList />} />
           <Route path="DoctorList" element={<DoctorList />} />
+          <Route path="AppointmentSlot" element={<AdminCreateSlot />} />
+        </Route>
+
+        <Route path="/HospitalDashboard" element={<HospitalDashboardLayout />}>
+          <Route index element={<HospitalDashboardPage />} />
+          <Route path="Profile/:id" element={<Profile />} />
+          <Route path="Department/:id" element={<Department />} />
+          <Route path="Event/:id" element={<HospitalDashboardEvent />} />
+          <Route path="Doctor/:id" element={<Doctor />} />
+          <Route path="Appointment/:id" element={<Appointment />} />
+          <Route path="Notification" element={<Notification />} />
+          <Route path="AppointmentSlot/:id" element={<AdminCreateSlot />} />
         </Route>
       </Routes>
     </BrowserRouter>

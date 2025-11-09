@@ -32,4 +32,10 @@ export const MenuItems = [
     label: <Link to="/Dashboard/DoctorList">Doctor</Link>,
     name: "/DoctorList",
   },
+  {
+    key: "5",
+    icon: <HomeOutlined />,
+    label: <Link to="/Dashboard/AppointmentSlot">Appointment Slot</Link>,
+    name: "/AppointmentSlot",
+  },
 ];
