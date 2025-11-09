@@ -52,7 +52,13 @@ const EventCreate = (props: {
 
   useEffect(() => {
     if (props.selectedRecord) {
-      form.setFieldsValue(props.selectedRecord);
+      form.setFieldsValue({
+        ...props.selectedRecord,
+      eventDate: dayjs(props.selectedRecord.eventDate),
+      startingTime: dayjs(props.selectedRecord.startingTime, "HH:mm:ss"),
+      closingTime: dayjs(props.selectedRecord.closingTime, "HH:mm:ss"),
+      })
+      //form.setFieldsValue(props.selectedRecord);
     } else {
       form.resetFields();
     }

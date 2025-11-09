@@ -4,7 +4,7 @@ import type { CreateHospitalDto } from "../../../ViewModels/HospitalDto";
 import axios from "axios";
 import dayjs from "dayjs";
 import type { DepartmentListDto } from "../../../ViewModels/Department";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -14,6 +14,35 @@ const CreateHospital: React.FC = () => {
   const [form] = Form.useForm();
   const { Step } = Steps;
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const hospitalId = location.state?.hospitalId;
+
+  useEffect(() => {
+    if (hospitalId) {
+      getHospitalById(hospitalId);
+    }
+  }, [hospitalId]);
+
+  const getHospitalById = async (id: number) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/Hospitals/GetDetails/${id}`
+      );
+      console.log(response.data.data);
+      if (response.status === 200) {
+        form.setFieldsValue({
+          ...response.data.data,
+          openingTime: dayjs(response.data.data.openingTime, "HH:mm:ss"),
+          closingTime: dayjs(response.data.data.closingTime, "HH:mm:ss"),
+        });
+      } else {
+        message.error("Failed to load hospital details.");
+      }
+    } catch (error) {
+      message.error("An error occurred while fetching hospital data.");
+    }
+  };
 
   const stepFields = [
     ["hospitalName", "address", "phone", "email", "type"],
@@ -33,10 +62,9 @@ const CreateHospital: React.FC = () => {
   const prev = () => setCurrent(current - 1);
 
   const onFinish = async (values: CreateHospitalDto) => {
-    console.log("values", values);
     const payload = {
       ...values,
-      hospitalId: 0,
+      hospitalId: hospitalId ? hospitalId : 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       openingTime: dayjs(values.openingTime).format("HH:mm:ss"),
@@ -44,11 +72,10 @@ const CreateHospital: React.FC = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/Hospitals/PostHospital`,
-        payload
-      );
-      if (response.status === 200 && response.data?.success) {
+      const response = hospitalId
+        ? await axios.put(`${BASE_URL}/Hospitals/Update`, payload)
+        : await axios.post(`${BASE_URL}/Hospitals/PostHospital`, payload);
+      if (response.status === 200) {
         form.resetFields();
         message.success("Hospital data submitted successfully!");
         navigate("/Dashboard/HospitalList");

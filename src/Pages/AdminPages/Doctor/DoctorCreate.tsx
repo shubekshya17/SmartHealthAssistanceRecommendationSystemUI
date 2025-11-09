@@ -77,6 +77,7 @@ const DoctorCreate = (props: {
   const onFinish = async (values: CreateDoctorDto) => {
     const payload = {
       ...values,
+      experienceYear: Number(values.experienceYear),
       doctorId: props.selectedRecord ? props.selectedRecord.doctorId : 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -272,7 +273,7 @@ const DoctorCreate = (props: {
               ]}
             >
               <Select
-                mode="tags"
+                mode="multiple"
                 placeholder="Add Hospitals"
                 options={
                   hospitalList.map((item: any) => ({

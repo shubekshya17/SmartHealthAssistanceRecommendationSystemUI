@@ -89,7 +89,6 @@ export default function Event() {
   const getHospitalEvents = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/Event/GetAll`);
-        console.log(response.data);
         if (response.status === 200) {
           setHospitalEvent(response.data);
         } else {

@@ -52,7 +52,9 @@ const HospitalList = () => {
       key: "hospitalName",
       render: (_, record) => (
         <a
-          onClick={() => navigate(`/Dashboard/HospitalDetails/${record.hospitalId}`)}
+          onClick={() =>
+            navigate(`/Dashboard/HospitalDetails/${record.hospitalId}`)
+          }
           style={{ color: "#1677ff", cursor: "pointer" }}
         >
           {record.hospitalName}
@@ -98,7 +100,15 @@ const HospitalList = () => {
       align: "center",
       render: (_, record) => (
         <Space>
-          <Button type="link" icon={<EditOutlined />}></Button>
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() =>
+              navigate("/Dashboard/CreateHospital", {
+                state: { hospitalId: record.hospitalId },
+              })
+            }
+          ></Button>
 
           <Popconfirm
             title="Are you sure you want to delete this record?"
