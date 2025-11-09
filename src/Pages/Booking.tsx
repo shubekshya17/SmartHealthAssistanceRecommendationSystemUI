@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams,Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 interface Hospital {
   hospitalId: number;
@@ -48,7 +48,7 @@ interface BookedSlot {
 }
 
 interface Department {
-  departmentId : number;
+  departmentId: number;
   departmentName: string;
 }
 
@@ -57,7 +57,7 @@ export default function Booking() {
 
   const [selectedHospital, setSelectedHospital] = useState<number | null>(null);
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
-   // Fetch hospitals
+  // Fetch hospitals
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
@@ -79,14 +79,16 @@ export default function Booking() {
       );
       if (match) {
         setSelectedHospital(match.hospitalId);
-      } 
+      }
     }
   }, [hospitals, params.id]);
 
   //Departments OR Specialities
-  const [filteredSpecialities, setFilteredSpecialities] = useState<Department[]>([]);
+  const [filteredSpecialities, setFilteredSpecialities] = useState<
+    Department[]
+  >([]);
   useEffect(() => {
-    if(!selectedHospital) return;
+    if (!selectedHospital) return;
     const fetchSpecialities = async () => {
       try {
         const res = await fetch(
@@ -106,10 +108,18 @@ export default function Booking() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
-   // Fetch doctors when hospital changes
+
+  // Fetch doctors when hospital changes
   useEffect(() => {
-    if (!selectedHospital) return;
-    fetch(`http://localhost:5102/api/Doctor/GetAll`)
+    if (!selectedHospital) {
+      setDoctors([]);
+      setFilteredDoctors([]);
+      return;
+    }
+
+    fetch(
+      `http://localhost:5102/api/Doctor/GetDoctorByHospitalId/${selectedHospital}`
+    )
       .then((res) => res.json())
       .then((data) => {
         setDoctors(data);
@@ -117,16 +127,19 @@ export default function Booking() {
       })
       .catch(console.error);
   }, [selectedHospital]);
+
   // Filter doctors by specialty
   useEffect(() => {
-    if (selectedSpecialty === "all") setFilteredDoctors(doctors);
-    else
+    if (selectedSpecialty === "all") {
+      setFilteredDoctors(doctors);
+    } else {
       setFilteredDoctors(
         doctors.filter((d) => d.departmentId === Number(selectedSpecialty))
       );
+    }
     setSelectedDoctor(null);
   }, [selectedSpecialty, doctors]);
-  
+
   const [step, setStep] = useState(1);
   // Slots
   const [slots, setSlots] = useState<Slot[]>([]);
@@ -139,7 +152,7 @@ export default function Booking() {
   const [patientPhone, setPatientPhone] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
   const [symptoms, setSymptoms] = useState("");
- 
+
   // Fetch slots for selected doctor
   useEffect(() => {
     if (!selectedDoctor || !selectedHospital) return;
@@ -358,7 +371,7 @@ export default function Booking() {
               style={{
                 background: "none",
                 border: "none",
-                color: "#69b3b4",
+                color: "#1677ff",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -388,7 +401,7 @@ export default function Booking() {
                     width: "40px",
                     height: "40px",
                     borderRadius: "50%",
-                    backgroundColor: step >= num ? "#69b3b4" : "#d1d5db",
+                    backgroundColor: step >= num ? "#1677ff" : "#d1d5db",
                     color: step >= num ? "white" : "#6b7280",
                     display: "flex",
                     alignItems: "center",
@@ -416,7 +429,7 @@ export default function Booking() {
             <div
               style={{
                 height: "100%",
-                backgroundColor: "#69b3b4",
+                backgroundColor: "#1677ff",
                 borderRadius: "4px",
                 width: `${(step / 4) * 100}%`,
                 transition: "width 0.3s",
@@ -516,7 +529,7 @@ export default function Booking() {
                     borderRadius: "8px",
                     border:
                       selectedDoctor === d.doctorId
-                        ? "2px solid #69b3b4"
+                        ? "2px solid #1677ff"
                         : "2px solid #e5e7eb",
                     backgroundColor:
                       selectedDoctor === d.doctorId ? "#eff6ff" : "white",
@@ -534,7 +547,7 @@ export default function Booking() {
             <button
               style={{
                 width: "100%",
-                backgroundColor: selectedDoctor ? "#69b3b4" : "#9ca3af",
+                backgroundColor: selectedDoctor ? "#1677ff" : "#9ca3af",
                 color: "white",
                 padding: "12px",
                 borderRadius: "8px",
@@ -621,7 +634,7 @@ export default function Booking() {
                       borderRadius: "6px",
                       border:
                         selectedTime === displayTime
-                          ? "2px solid #69b3b4"
+                          ? "2px solid #1677ff"
                           : "1px solid #d1d5db",
                       backgroundColor: isBooked
                         ? "#f87171"
@@ -641,7 +654,7 @@ export default function Booking() {
             <button
               style={{
                 width: "100%",
-                backgroundColor: selectedTime ? "#69b3b4" : "#9ca3af",
+                backgroundColor: selectedTime ? "#1677ff" : "#9ca3af",
                 color: "white",
                 padding: "12px",
                 borderRadius: "8px",
@@ -732,7 +745,7 @@ export default function Booking() {
                 width: "100%",
                 backgroundColor:
                   patientName && patientPhone && patientEmail
-                    ? "#69b3b4"
+                    ? "#1677ff"
                     : "#9ca3af",
                 color: "white",
                 padding: "12px",

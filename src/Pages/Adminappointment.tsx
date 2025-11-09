@@ -139,17 +139,22 @@ const AdminCreateSlot: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Create Appointment Slot</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-12 mb-8">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Create Appointment Slot
+      </h2>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Hospital Selector */}
-        <div>
-          <label>Hospital:</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Hospital
+          </label>
           <select
             name="hospitalId"
             value={form.hospitalId}
             onChange={handleInputChange}
-            className="border p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
           >
             <option value="">Select Hospital</option>
             {hospitals.map((hospital) => (
@@ -161,13 +166,15 @@ const AdminCreateSlot: React.FC = () => {
         </div>
 
         {/* Doctor Selector */}
-        <div>
-          <label>Doctor:</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Doctor
+          </label>
           <select
             name="doctorId"
             value={form.doctorId}
             onChange={handleInputChange}
-            className="border p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
           >
             <option value="">Select Doctor</option>
             {doctors.map((doctor) => (
@@ -179,13 +186,15 @@ const AdminCreateSlot: React.FC = () => {
         </div>
 
         {/* Shift Selector */}
-        <div>
-          <label>Shift:</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Shift
+          </label>
           <select
             name="shift"
             value={form.shift}
             onChange={handleInputChange}
-            className="border p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
           >
             <option>Morning</option>
             <option>Day</option>
@@ -194,16 +203,20 @@ const AdminCreateSlot: React.FC = () => {
         </div>
 
         {/* Days Selection */}
-        <div>
-          <label>Available Days:</label>
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-700">
+            Available Days
+          </label>
           <div className="flex gap-2 flex-wrap">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
               <button
                 type="button"
                 key={day}
                 onClick={() => toggleDay(day)}
-                className={`px-3 py-1 border rounded ${
-                  selectedDays.includes(day) ? "bg-blue-500 text-white" : ""
+                className={`px-3 py-1.5 border-2 rounded-lg font-medium transition-all duration-200 text-sm ${
+                  selectedDays.includes(day)
+                    ? "bg-blue-500 text-white border-blue-500 shadow-sm"
+                    : "bg-white text-gray-700 border-gray-300 hover:border-blue-400 hover:text-blue-600"
                 }`}
               >
                 {day}
@@ -213,57 +226,80 @@ const AdminCreateSlot: React.FC = () => {
         </div>
 
         {/* Time Inputs for Selected Days */}
-        {selectedDays.map((day) => (
-          <div key={day} className="flex gap-4 items-center">
-            <label>{day} Start:</label>
-            <input
-              type="time"
-              name={`${day.toLowerCase()}Start`}
-              value={(form as any)[`${day.toLowerCase()}Start`] || ""}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  [`${day.toLowerCase()}Start`]: e.target.value,
-                }))
-              }
-              className="border p-1"
-              required
-            />
-            <label>{day} End:</label>
-            <input
-              type="time"
-              name={`${day.toLowerCase()}End`}
-              value={(form as any)[`${day.toLowerCase()}End`] || ""}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  [`${day.toLowerCase()}End`]: e.target.value,
-                }))
-              }
-              className="border p-1"
-              required
-            />
-          </div>
-        ))}
+        <div className="space-y-3">
+          {selectedDays.map((day) => (
+            <div key={day} className="bg-gray-50 p-3 rounded-lg space-y-2">
+              <h3 className="font-medium text-gray-800 text-sm">
+                {day} Schedule
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-gray-600">
+                    Start Time
+                  </label>
+                  <input
+                    type="time"
+                    name={`${day.toLowerCase()}Start`}
+                    value={(form as any)[`${day.toLowerCase()}Start`] || ""}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [`${day.toLowerCase()}Start`]: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-gray-600">
+                    End Time
+                  </label>
+                  <input
+                    type="time"
+                    name={`${day.toLowerCase()}End`}
+                    value={(form as any)[`${day.toLowerCase()}End`] || ""}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [`${day.toLowerCase()}End`]: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* Appointment Time Gap */}
-        <div>
-          <label>Appointment Time Gap (minutes):</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Appointment Time Gap (minutes)
+          </label>
           <input
             type="number"
             name="appTimeGap"
             value={form.appTimeGap}
             onChange={handleInputChange}
-            className="border p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+            min="5"
+            max="60"
+            step="5"
           />
         </div>
 
-        <button
-          type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Create Slot
-        </button>
+        {/* Submit Button */}
+        <div className="pt-3">
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2.5 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 focus:ring-2 focus:ring-blue-200 transition-all duration-200 shadow-sm text-sm"
+          >
+            Create Slot
+          </button>
+        </div>
       </form>
     </div>
   );
